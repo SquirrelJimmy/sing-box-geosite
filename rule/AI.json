@@ -1,0 +1,54 @@
+{
+  "rules": [
+    {
+      "domain": [
+        "copilot.microsoft.com",
+        "generativelanguage.googleapis.com"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "ai.google",
+        "googleapis"
+      ]
+    },
+    {
+      "domain_suffix": [
+        "aistudio.google.com",
+        "anthropic.com",
+        "auth0.com",
+        "bard.google.com",
+        "bing.com",
+        "bortzmeyer.org",
+        "chatgpt.com",
+        "circumlunar.space",
+        "claude.ai",
+        "client-api.arkoselabs.com",
+        "conman.org",
+        "events.statsigapi.net",
+        "featuregates.org",
+        "gemini.google.com",
+        "googleapis.cn",
+        "googleapis.com",
+        "gstatic.com",
+        "identrust.com",
+        "intercom.io",
+        "intercomcdn.com",
+        "makersuite.google.com",
+        "meta.ai",
+        "metademolab.com",
+        "mozz.us",
+        "oaistatic.com",
+        "oaiusercontent.com",
+        "openai.com",
+        "openaiapi-site.azureedge.net",
+        "perplexity.ai",
+        "sentry.io",
+        "signalr.net",
+        "stripe.com",
+        "vulpes.one"
+      ]
+    }
+  ],
+  "version": 2
+}

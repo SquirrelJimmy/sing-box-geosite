@@ -38,7 +38,7 @@ https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master
 https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple-cn.list
 https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/onedrive.list
 https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/ookla-speedtest.list
-https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/proxy.json
+https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/gfw.json
 https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/gfw.list
 https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/geolocation-!cn.list
 https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/ai.list

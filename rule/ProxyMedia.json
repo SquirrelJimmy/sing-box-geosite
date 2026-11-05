@@ -104,7 +104,7 @@
     },
     {
       "domain_regex": [
-        "^https?:\/\/www\.amazon\.com\/(Amazon-Video|gp\/video)\/"
+        "^https?:\\/\\/www\\.amazon\\.com\\/(Amazon-Video|gp\\/video)\\/"
       ]
     },
     {

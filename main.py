@@ -70,6 +70,35 @@ def is_ipv4_or_ipv6(address):
         except ValueError:
             return None
 
+def fetch_text(url):
+    headers = {'User-Agent': 'Mozilla/5.0'}
+    response = requests.get(url, headers=headers, timeout=120)
+    response.raise_for_status()
+    return response.text
+
+def items_to_dataframe(items):
+    rows = []
+    for item in items:
+        item = item.strip()
+        if not item or item.startswith('#'):
+            continue
+        address = item.strip("'")
+        if ',' not in item:
+            if is_ipv4_or_ipv6(item):
+                pattern = 'IP-CIDR'
+            else:
+                if address.startswith('+') or address.startswith('.'):
+                    pattern = 'DOMAIN-SUFFIX'
+                    address = address.lstrip('+.')
+                else:
+                    pattern = 'DOMAIN'
+        else:
+            pattern, address = item.split(',', 1)
+        if ',' in address:
+            address = address.split(',', 1)[0]
+        rows.append({'pattern': pattern.strip(), 'address': address.strip(), 'other': None})
+    return pd.DataFrame(rows, columns=['pattern', 'address', 'other'])
+
 def parse_and_convert_to_dataframe(link):
     rules = []
     # 根据链接扩展名分情况处理
@@ -103,9 +132,14 @@ def parse_and_convert_to_dataframe(link):
                 rows.append({'pattern': pattern.strip(), 'address': address.strip(), 'other': None})
             df = pd.DataFrame(rows, columns=['pattern', 'address', 'other'])
         except:
-            df, rules = read_list_from_url(link)
+            df = items_to_dataframe(fetch_text(link).splitlines())
     else:
-        df, rules = read_list_from_url(link)
+        text = fetch_text(link)
+        lines = [line for line in text.splitlines() if line.strip()]
+        if lines and not any(',' in line for line in lines):
+            df = items_to_dataframe(lines)
+        else:
+            df, rules = read_list_from_url(link)
     return df, rules
 
 # 对字典进行排序，含list of dict
@@ -120,7 +154,22 @@ def sort_dict(obj):
         return obj
 
 def parse_list_file(link, output_directory):
+    name_override = None
+    if '#' in link:
+        link, fragment = link.split('#', 1)
+        if fragment.startswith('name='):
+            name_override = fragment[len('name='):]
     try:
+        if link.endswith('.json'):
+            data = json.loads(fetch_text(link))
+            if not isinstance(data, dict) or 'rules' not in data:
+                raise ValueError('not a sing-box rule-set json')
+            file_name = os.path.join(output_directory, f"{name_override or os.path.basename(link).split('.')[0]}.json")
+            with open(file_name, 'w', encoding='utf-8') as output_file:
+                output_file.write(json.dumps(data, ensure_ascii=False, indent=2))
+            srs_path = file_name.replace(".json", ".srs")
+            os.system(f"sing-box rule-set compile --output {srs_path} {file_name}")
+            return file_name
         with concurrent.futures.ThreadPoolExecutor() as executor:
             results= list(executor.map(parse_and_convert_to_dataframe, [link]))  # 使用executor.map并行处理链接, 得到(df, rules)元组的列表
             dfs = [df for df, rules in results]   # 提取df的内容
@@ -156,10 +205,9 @@ def parse_list_file(link, output_directory):
         """
 
         # 使用 output_directory 拼接完整路径
-        file_name = os.path.join(output_directory, f"{os.path.basename(link).split('.')[0]}.json")
+        file_name = os.path.join(output_directory, f"{name_override or os.path.basename(link).split('.')[0]}.json")
         with open(file_name, 'w', encoding='utf-8') as output_file:
             result_rules_str = json.dumps(sort_dict(result_rules), ensure_ascii=False, indent=2)
-            result_rules_str = result_rules_str.replace('\\\\', '\\')
             output_file.write(result_rules_str)
 
         srs_path = file_name.replace(".json", ".srs")

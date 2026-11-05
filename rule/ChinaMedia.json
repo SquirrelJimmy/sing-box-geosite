@@ -12,7 +12,7 @@
     },
     {
       "domain_regex": [
-        "^https?:\/\/int[\w-\.]+iqiyi\.com"
+        "^https?:\\/\\/int[\\w-\\.]+iqiyi\\.com"
       ]
     },
     {
